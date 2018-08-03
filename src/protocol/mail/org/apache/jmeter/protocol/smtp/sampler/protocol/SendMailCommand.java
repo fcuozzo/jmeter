@@ -74,6 +74,7 @@ public class SendMailCommand {
     private String smtpServer;
     private String smtpPort;
     private String sender;
+    private String tlsProtocols;
     private List<InternetAddress> replyTo;
     private String emlMessage;
     private List<InternetAddress> receiverTo;
@@ -138,14 +139,22 @@ public class SendMailCommand {
         props.setProperty("mail." + protocol + ".timeout", getTimeout());
         props.setProperty("mail." + protocol + ".connectiontimeout", getConnectionTimeout());
 
+
+        String tlsProtocols = getTlsProtocolsToUse();
+
         if (useStartTLS || useSSL) {
-            try {
-                String allProtocols = StringUtils.join(
-                    SSLContext.getDefault().getSupportedSSLParameters().getProtocols(), " ");
-                logger.info("Use ssl/tls protocols for mail: {}", allProtocols);
-                props.setProperty("mail." + protocol + ".ssl.protocols", allProtocols);
-            } catch (Exception e) {
-                logger.error("Problem setting ssl/tls protocols for mail", e);
+            if (tlsProtocols.isEmpty()) {
+                try {
+                    String allProtocols = StringUtils.join(
+                        SSLContext.getDefault().getSupportedSSLParameters().getProtocols(), " ");
+                    logger.info("Use ssl/tls protocols for mail: {}", allProtocols);
+                    props.setProperty("mail." + protocol + ".ssl.protocols", allProtocols);
+                } catch (Exception e) {
+                    logger.error("Problem setting ssl/tls protocols for mail", e);
+                }
+            } else {
+                logger.info("Use custom ssl/tls protocols for mail: {}", tlsProtocols);
+                props.setProperty("mail." + protocol + ".ssl.protocols", tlsProtocols);
             }
         }
 
@@ -848,5 +857,19 @@ public class SendMailCommand {
 
     public void setReplyTo(List<InternetAddress> replyTo) {
         this.replyTo = replyTo;
+    }
+
+    /**
+     * Sets the list of protocols to be used on TLS handshake
+     *
+     * @param tlsProtocols
+     *          Space separated list
+     */
+    public void setTlsProtocolsToUse(String tlsProtocols) {
+        this.tlsProtocols = tlsProtocols;
+    }
+
+    public String getTlsProtocolsToUse() {
+        return this.tlsProtocols;
     }
 }
