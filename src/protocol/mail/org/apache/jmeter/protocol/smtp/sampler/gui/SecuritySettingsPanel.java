@@ -363,7 +363,6 @@ public class SecuritySettingsPanel extends JPanel{
      */
     public String getTlsProtocolsToUse() {
         return tfTlsProtocolsToUse.getText();
-
     }
 
     /**
@@ -374,7 +373,6 @@ public class SecuritySettingsPanel extends JPanel{
      */
     public void setTlsProtocolsToUse(String tlsProtocols) {
         tfTlsProtocolsToUse.setText(tlsProtocols);
-
     }
 
     public void setUseNoSecurity(boolean selected) {
@@ -430,5 +428,4 @@ public class SecuritySettingsPanel extends JPanel{
         te.setProperty(TRUSTSTORE_TO_USE, getTrustStoreToUse());
         te.setProperty(TLS_PROTOCOLS, getTlsProtocolsToUse());
     }
-
 }
